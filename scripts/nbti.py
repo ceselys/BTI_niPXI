@@ -45,6 +45,8 @@ parser = argparse.ArgumentParser(description="NBTI measurement")
 parser.add_argument("settings", help="settings filename")
 parser.add_argument("chip", help="chip name for logging")
 parser.add_argument("device", help="device name for logging")
+parser.add_argument("--data-folder", type=str, default="data", help="Base folder where measurement data is saved (default: ./data)"
+)
 parser.add_argument("--polarity", type=str, nargs="?", default="PMOS", help="polarity of device (PMOS or NMOS)")
 parser.add_argument("--tstart", type=float, nargs="?", default=10e-3, help="when to start reading iv after applying dc gate bias")
 parser.add_argument("--tend", type=float, nargs="?", default=2e3, help="when to stop reading")
@@ -58,7 +60,7 @@ parser.add_argument("--relax", action=argparse.BooleanOptionalAction, default=Tr
 parser.add_argument("--relax-iv", action=argparse.BooleanOptionalAction, default=False, help="Do relaxation IV sweep measurement")
 # parser.add_argument("--relax-iv-sweep", type=float, nargs="+", default=[0.4, -1.4, 0.2], help="TODO]")
 parser.add_argument("--stress-relax-cycles", type=int, nargs="?", default=0, help="number of DC stress-relax cycles to run, like a DC biased version of AC stress")
-parser.add_argument("--read-bias", type=float, nargs="?", default=-0.1, help="read drain bias in volts")
+parser.add_argument("--read-bias", type=float, nargs="?", default=-0.8, help="read drain bias in volts")
 parser.add_argument("--read-gate-bias", type=float, nargs="?", default=-1.2, help="read gate bias in volts")
 parser.add_argument("--gate-bias", type=float, nargs="?", default=-2.0, help="stress constant gate bias in volts")
 parser.add_argument("--boost-voltage", type=float, nargs="?", default=0, help="boost all lines by this value")
@@ -70,6 +72,7 @@ parser.add_argument("--vt-min", type=float, nargs="?", default=-0.1, help="vt mi
 parser.add_argument("--vt-max", type=float, nargs="?", default=0.2, help="vt max for clamp vt")
 parser.add_argument("--initial-sweep", type=float, nargs="+", default=[0.4, -1.4, 0.2], help="pre-stress IDVG gate voltage initial sweep range [start, stop, step]")
 parser.add_argument("--initial-sweep-sleep", type=float, nargs="?", default=10.0, help="time to sleep between each initial IDVG sweep spot measurement point")
+
 
 # AC NBTI arguments
 parser.add_argument("--ac", action="store_true", default=False, help="Do AC pulsed stress")
@@ -189,7 +192,7 @@ print(f"Time sampling points RELAX: {t_measure_points_relax}")
 
 timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
 data_foldername = f"{timestamp}_{str(args.chip)}_{str(args.device)}"
-path_data_folder = os.path.join("data", data_foldername)
+path_data_folder = os.path.join(args.data_folder, data_foldername)
 os.makedirs(path_data_folder, exist_ok=True)
 path_data_stress = os.path.join(path_data_folder, "nbti_id_vs_time_stress")
 path_data_relax = os.path.join(path_data_folder, "nbti_id_vs_time_relax")
@@ -345,9 +348,6 @@ for v_wl in v_wl_initial_sweep:
         # time.sleep(10e-3)
         # time.sleep(10.0)
         time.sleep(initial_sweep_sleep)
-
-# nisys.close()
-# exit()
 
 # save in json format
 path_initial_iv_json = os.path.join(path_data_folder, f"initial_iv.json")

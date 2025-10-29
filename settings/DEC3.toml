@@ -1,7 +1,7 @@
 [path]
 master_log_file = "logs/master.log"
 prog_log_file = "logs/prog.log"
-data_header = "data/"
+data_header = "data/tests/"
 
 [NIDigital]
 deviceID = "PXI1Slot9"

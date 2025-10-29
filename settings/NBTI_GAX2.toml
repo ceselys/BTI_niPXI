@@ -1,11 +1,11 @@
 [path]
 master_log_file = "logs/master.log"
 prog_log_file = "logs/prog.log"
-data_header = "data/"
+data_header = "_DATA/Wafer9_PMOS_NBTI_AC_1kHz_Duty_0.5_Vgs_-1.2V"
 
 
 [NIDigital]
-deviceID = "PXI2Slot7_6570"
+deviceID = "PXI6570Slot8"
 pinmap = "settings/MPW_GAX2_CNFET.pinmap"
 specs = [
   "settings/DEC3.specs",
